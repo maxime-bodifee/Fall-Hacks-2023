@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using static UnityEditor.PlayerSettings;
 
 public struct Position
 {
@@ -18,7 +19,7 @@ public struct Position
         Row = row;
     }
 
-    public (int, int) GetIndex()
+    public readonly (int, int) GetIndex()
     {
         return (Column - 1, Row - 1);
     }
@@ -37,10 +38,13 @@ public class GameManager : MonoBehaviour
         whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing, 
         blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing;
 
-    public GameObject chessPiece;
     private GameObject[,] positions = new GameObject[8, 8];
-    private GameObject[] playerWhite;
-    private GameObject[] playerBlack;
+    private List<GameObject> playerWhite;
+    private List<GameObject> playerBlack;
+    public GameObject selectedPiece = null;
+
+    public float z;
+    public float x;
 
     public enum GameStates
     {
@@ -52,7 +56,7 @@ public class GameManager : MonoBehaviour
 
     public GameStates currentState;
 
-    public enum Players { White, Black }
+    public enum Players { white, black }
     public Players currentPlayer;
 
     private int column;
@@ -66,17 +70,18 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerWhite = new GameObject[] {
+        playerWhite = new List<GameObject> 
+        {
             Spawn(whiteRook, 1, 1), Spawn(whiteKnight, 2, 1), Spawn(whiteBishop, 3, 1), Spawn(whiteQueen, 4, 1),
             Spawn(whiteKing, 5, 1), Spawn(whiteBishop, 6, 1), Spawn(whiteKnight, 7, 1), Spawn(whiteRook, 8, 1),
         };
         
         for (int i = 1; i < 9; i++)
         {
-            playerWhite.Append(Spawn(whitePawn, i, 2));
+            playerWhite.Add(Spawn(whitePawn, i, 2));
         }
 
-        playerBlack = new GameObject[]
+        playerBlack = new List<GameObject>
         {
             Spawn(blackRook, 1, 8), Spawn(blackKnight, 2, 8), Spawn(blackBishop, 3, 8), Spawn(blackQueen, 4, 8),
             Spawn(blackKing, 5, 8), Spawn(blackBishop, 6, 8), Spawn(blackKnight, 7, 8), Spawn(blackRook, 8, 8),
@@ -84,7 +89,7 @@ public class GameManager : MonoBehaviour
         
         for (int i = 1; i < 9; i++)
         {
-            playerWhite.Append(Spawn(blackPawn, i, 7));
+            playerBlack.Add(Spawn(blackPawn, i, 7));
         }
 
         for (int i = 0; i < 16; i++)
@@ -94,12 +99,14 @@ public class GameManager : MonoBehaviour
         }
 
         currentState = GameStates.Playing;
-        currentPlayer = Players.White;
+        currentPlayer = Players.white;
     }
     
     public GameObject Spawn(GameObject pieceType, int column, int row)
     {
-        GameObject newChessPiece = Instantiate(pieceType, new Vector3(0, 0, -1), Quaternion.identity);
+        z = -3.5f + (column - 1) * 1f;
+        x = 3.5f - (row - 1) * 1f;
+        GameObject newChessPiece = Instantiate(pieceType, new Vector3(x, 2.5f, z), Quaternion.identity, this.transform);
         ChessPiece cp = newChessPiece.GetComponent<ChessPiece>();
         cp.player = pieceType.name[..5];
         cp.pieceType = pieceType.name[5..];
@@ -128,19 +135,39 @@ public class GameManager : MonoBehaviour
     public bool PositionOnBoard(Position pos)
     {
         (column, row) = pos.GetIndex();
-        if (column < 0 || row < 0 || column >= positions.GetLength(0) || row >= positions.GetLength(1)) return false;
+        if (column < 0 || row < 0 || column >= positions.GetLength(0) || row >= positions.GetLength(1)) { return false; }
         return true;
+    }
+
+    public string GetCurrentPlayer()
+    {
+        return currentPlayer.ToString();
     }
     
     public void NextTurn()
     {
-        if (currentPlayer == Players.White)
+        if (currentPlayer == Players.white)
         {
-            currentPlayer = Players.Black;
+            currentPlayer = Players.black;
         }
         else
         {
-            currentPlayer = Players.White;
+            currentPlayer = Players.white;
+        }
+        
+        selectedPiece = null;
+    }
+
+    public bool IsGameOver()
+    {
+        return currentState == GameStates.Over;
+    }
+
+    public void SelectNewPiece()
+    {
+        if (selectedPiece != null)
+        {
+            selectedPiece.GetComponent<ChessPiece>().DestroyValidMoves();
         }
     }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -11,6 +12,7 @@ public class ChessPiece : MonoBehaviour
     public string pieceType;
     public Position position;
     public bool firstMove = true;
+    public bool selected = false;
 
     private Position newPos;
     private int column;
@@ -19,10 +21,25 @@ public class ChessPiece : MonoBehaviour
     private float x;
     private (int, int) increment;
 
+    public void SetPosition(Position pos)
+    {
+        (column, row) = pos.GetIndex();
+        z = -3.5f + column * 1f;
+        x = 3.5f - row * 1f;
+        this.transform.position = new Vector3(x, 2.5f, z);
+        position = pos;
+    }
+
+    public void DestroyValidMoves()
+    {
+        foreach (Transform t in transform)
+        {
+            Destroy(t.gameObject);
+        }
+    }
+
     public void CreateValidMoves()
     {
-        GameManager gm = GameManager._instance;
-
         if (pieceType == "King")
         {
             KingMoves();
@@ -53,13 +70,13 @@ public class ChessPiece : MonoBehaviour
         {
             if (player == "white")
             {
-                PawnMoves(position + (1, 0));
-                if (firstMove) { PointMove(position + (2, 0)); }
+                PawnMoves(position + (0, 1));
+                if (firstMove) { PointMove(position + (0, 2)); }
             }
             else
             {
-                PawnMoves(position + (-1, 0));
-                if (firstMove) { PointMove(position + (-2, 0)); }
+                PawnMoves(position + (0, -1));
+                if (firstMove) { PointMove(position + (0, -2)); }
             }
         }
     }
@@ -90,9 +107,9 @@ public class ChessPiece : MonoBehaviour
     {
         for (int i = -2; i < 3; i++)
         {
-            for (int j = -2; i < 3; i++)
+            for (int j = -2; j < 3; j++)
             {
-                if (i * j == 2 || i * j == -2) { PointMove(newPos + (i, j)); }
+                if (i * j == 2 || i * j == -2) { PointMove(position + (i, j)); }
             }
         }
     }
@@ -105,7 +122,7 @@ public class ChessPiece : MonoBehaviour
         {
             if (gm.GetPosition(pos) == null)
             {
-                // MovePlateSpawn(pos);
+                TileSpawn(pos);
             }
 
             newPos = pos + (1, 0);
@@ -131,7 +148,7 @@ public class ChessPiece : MonoBehaviour
 
         while (gm.PositionOnBoard(newPos) && gm.GetPosition(newPos) == null)
         {
-            // MovePlateSpawn(x, y);
+            TileSpawn(newPos);
             newPos += increment;
         }
 
@@ -150,7 +167,7 @@ public class ChessPiece : MonoBehaviour
 
             if (cp == null)
             {
-                // MovePlateSpawn(x, y);
+                TileSpawn(pos);
             }
             else if (cp.GetComponent<ChessPiece>().player != player)
             {
@@ -163,9 +180,30 @@ public class ChessPiece : MonoBehaviour
     {
         (column, row) = pos.GetIndex();
         z = -3.5f + column * 1f;
-        x = 4.5f - row * 1f;
+        x = 3.5f - row * 1f;
 
-        GameObject t = Instantiate(tile, new Vector3(x, 2.5f, z), Quaternion.identity);
+        GameObject t = Instantiate(tile, new Vector3(x, 2.5f, z), Quaternion.identity, this.transform);
         Tile tScript = t.GetComponent<Tile>();
+        tScript.SetPosition(pos);
+    }
+
+    private void OnMouseUp() 
+    {
+        if (!selected)
+        {
+            GameManager gm = GameManager._instance;
+            if (!gm.IsGameOver() && gm.GetCurrentPlayer() == player)
+            {
+                gm.SelectNewPiece();
+                CreateValidMoves();
+                gm.selectedPiece = this.transform.gameObject;
+                selected = !selected;
+            }
+        }
+        else
+        {
+            DestroyValidMoves();
+            selected = !selected;
+        }
     }
 }

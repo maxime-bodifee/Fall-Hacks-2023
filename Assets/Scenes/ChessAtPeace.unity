@@ -3337,7 +3337,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1242950898}
-  - component: {fileID: 1242950897}
+  - component: {fileID: 1242950899}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3345,34 +3345,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1242950897
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1242950896}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47aaabfdb3bc797408a1f14e5d2992d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  whitePawn: {fileID: 7842095396303159553, guid: 828dffb82c466fe4f972042eb673edcc, type: 3}
-  whiteKnight: {fileID: 294887710478983116, guid: 9f58cd978f00a8744a6d09b9a212ec9f, type: 3}
-  whiteBishop: {fileID: 5756165511621735490, guid: f53bf8ccf80e9a4419469c9fb2588fdc, type: 3}
-  whiteRook: {fileID: 8646351025568666836, guid: 432ec9271d6c6cc429be378831fc415a, type: 3}
-  whiteQueen: {fileID: 6119556390593248432, guid: 816581a4361519647b0b78c3df16b680, type: 3}
-  whiteKing: {fileID: 3317912581402030544, guid: 8dda6a6e0cb2c30439c954f53d847ef6, type: 3}
-  blackPawn: {fileID: 8540378777436752859, guid: 00a810f7a4ab66f469b2102df2385aaa, type: 3}
-  blackKnight: {fileID: 2488594122029178996, guid: a00deff087ef6f648b3e9a7cc550b76b, type: 3}
-  blackBishop: {fileID: 4387273761801991384, guid: ed20d4bf2cce8624c8f30a9bef71d9ff, type: 3}
-  blackRook: {fileID: 2323016774555829446, guid: d6f368b61784f2f48a82ba7cdf064844, type: 3}
-  blackQueen: {fileID: 7458174635915639288, guid: fb9bc6aee5f18ab4499f29bf63ee0705, type: 3}
-  blackKing: {fileID: 4370813290673080923, guid: ac5ace78625983b4d941d2d510ab1c78, type: 3}
-  z: 0
-  x: 0
-  currentState: 0
-  currentPlayer: 0
 --- !u!4 &1242950898
 Transform:
   m_ObjectHideFlags: 0
@@ -3388,6 +3360,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1242950899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242950896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47aaabfdb3bc797408a1f14e5d2992d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  whitePawn: {fileID: 7842095396303159553, guid: 6add93514d1f60349a6de874abbd46de, type: 3}
+  whiteKnight: {fileID: 294887710478983116, guid: 1b43b83a9832a674fba5f3c344174550, type: 3}
+  whiteBishop: {fileID: 5756165511621735490, guid: d242bc3311d59ad46a2c9d3d06177ccc, type: 3}
+  whiteRook: {fileID: 8646351025568666836, guid: e0165aa3c9343734aa937088bc39a4f1, type: 3}
+  whiteQueen: {fileID: 6119556390593248432, guid: 694402d4331e3884889deb58e88dd01c, type: 3}
+  whiteKing: {fileID: 3317912581402030544, guid: 8c1b8954c2c56a24d93ad7cacb075996, type: 3}
+  blackPawn: {fileID: 8540378777436752859, guid: 79768f011761a2b48bb9e2ef3054f271, type: 3}
+  blackKnight: {fileID: 2488594122029178996, guid: 3cc79c158b90bd84c8385ea57ec817e0, type: 3}
+  blackBishop: {fileID: 4387273761801991384, guid: ae35c15a473445d4799257b55f7c37d6, type: 3}
+  blackRook: {fileID: 2323016774555829446, guid: 755dc0aaa55cab249bc34c98d0c3f1cd, type: 3}
+  blackQueen: {fileID: 7458174635915639288, guid: bb4d026a3c2110a41abf806c96ece96b, type: 3}
+  blackKing: {fileID: 4370813290673080923, guid: 2d681946f5c229647b90182238d29276, type: 3}
+  z: 0
+  x: 0
+  currentState: 0
+  currentPlayer: 0
 --- !u!4 &1247193692 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4785192122766780, guid: 7e11e78c695eeb947a2e2619a8a5c883, type: 3}
