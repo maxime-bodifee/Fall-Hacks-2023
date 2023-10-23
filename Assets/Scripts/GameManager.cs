@@ -24,6 +24,11 @@ public struct Position
         return (Column - 1, Row - 1);
     }
 
+    public readonly bool InBoardCenter()
+    {
+        return (Column == 4 || Column == 5) && (Row == 4 || Row == 5);
+    }
+
     public static Position operator +(Position a, (int column, int row) b)
     {
         return new Position(a.Column + b.column, a.Row + b.row);
@@ -38,10 +43,13 @@ public class GameManager : MonoBehaviour
         whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing, 
         blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing;
 
+    public GameObject selectedPiece = null;
+
     private GameObject[,] positions = new GameObject[8, 8];
     private List<GameObject> playerWhite;
     private List<GameObject> playerBlack;
-    public GameObject selectedPiece = null;
+    private GameObject wKing;
+    private GameObject bKing;
 
     public float z;
     public float x;
@@ -111,6 +119,19 @@ public class GameManager : MonoBehaviour
         cp.player = pieceType.name[..5];
         cp.pieceType = pieceType.name[5..];
         cp.position = new Position(column, row);
+        
+        if (cp.pieceType == "King")
+        {
+            if (cp.player == "white")
+            {
+                wKing = newChessPiece;
+            }
+            else
+            {
+                bKing = newChessPiece;
+            }
+        }
+
         return newChessPiece;
     }
 
@@ -135,8 +156,7 @@ public class GameManager : MonoBehaviour
     public bool PositionOnBoard(Position pos)
     {
         (column, row) = pos.GetIndex();
-        if (column < 0 || row < 0 || column >= positions.GetLength(0) || row >= positions.GetLength(1)) { return false; }
-        return true;
+        return !(column < 0 || row < 0 || column >= positions.GetLength(0) || row >= positions.GetLength(1));
     }
 
     public string GetCurrentPlayer()
@@ -146,6 +166,11 @@ public class GameManager : MonoBehaviour
     
     public void NextTurn()
     {
+        if (wKing.GetComponent<ChessPiece>().position.InBoardCenter() && bKing.GetComponent<ChessPiece>().position.InBoardCenter())
+        {
+            currentState = GameStates.Over;
+        }
+
         if (currentPlayer == Players.white)
         {
             currentPlayer = Players.black;
@@ -177,7 +202,7 @@ public class GameManager : MonoBehaviour
         if (currentState == GameStates.Over && Input.GetMouseButtonDown(0))
         {
             currentState = GameStates.Playing;
-            SceneManager.LoadScene("FlatPoly Chess and Checkers Forest Sample");
+            SceneManager.LoadScene("ChessAtPeace");
         }
     }
 }

@@ -23,7 +23,6 @@ public class Tile : MonoBehaviour
         chessPiece.selected = false;
         chessPiece.DestroyValidMoves();
         gm.SetPosition(this.transform.parent.gameObject);
-
         gm.NextTurn();
     }
 
